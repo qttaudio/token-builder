@@ -11,11 +11,11 @@ import java.util.HashMap;
 import static com.qttaudio.token.utils.Utils.checkNullParams;
 
 public class TokenVerifier {
-    public static boolean verify(final String tok, final String appKey, final String appSecret, final String channelName, final Long uid) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-        checkNullParams(new HashMap<String, Object>(){{
+    public static boolean verify(final String tok, final String appKey, final String appCert, final String channelName, final Long uid) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+        checkNullParams(new HashMap<String, Object>() {{
             put("token", tok);
             put("appKey", appKey);
-            put("appSecret", appSecret);
+            put("appCert", appCert);
             put("channelName", channelName);
             put("uid", uid);
         }});
@@ -28,7 +28,7 @@ public class TokenVerifier {
         }
         Builder builder = TokenBuilderFactory.getBuilder(EBuilderType.QTT);
         byte[] contents = builder.getSignContents(appKey, channelName, uid, token.getExtra().Marshal());
-        byte[] sign = Utils.hmacSign(appSecret, contents);
+        byte[] sign = Utils.hmacSign(appCert, contents);
         if (!Arrays.equals(token.getSign(), sign)) {
             return false;
         }

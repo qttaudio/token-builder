@@ -10,18 +10,18 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 class QttTokenBuilder implements Builder {
-    public String build(String appKey, String appSecret, String channelName, Long uid,
+    public String build(String appKey, String appCert, String channelName, Long uid,
                         Strategy strategy) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
         byte[] extra = new Extra(strategy.getTtl()).Marshal();
         byte[] contents = getSignContents(appKey, channelName, uid, extra);
-        byte[] sign = Utils.hmacSign(appSecret, contents);
+        byte[] sign = Utils.hmacSign(appCert, contents);
         ByteBuffer buf = ByteBuffer.allocate(sign.length + 8 + extra.length).order(ByteOrder.LITTLE_ENDIAN);
         buf.put(sign)
                 .putInt(Utils.crc32(channelName))
                 .putInt(Utils.crc32(uid.toString()))
                 .put(extra);
-        StringBuilder builder = new StringBuilder(Token.VERSION);
-        builder.append(appKey).append(Utils.base64Encode(buf.array()));
+        StringBuilder builder = new StringBuilder(TAG);
+        builder.append(Token.VERSION).append(appKey).append(Utils.base64Encode(buf.array()));
         return builder.toString();
     }
 
@@ -33,4 +33,6 @@ class QttTokenBuilder implements Builder {
         contents.write(extra);
         return contents.toByteArray();
     }
+
+    private static final String TAG = "Qtt";
 }

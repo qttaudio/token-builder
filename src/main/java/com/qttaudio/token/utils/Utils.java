@@ -13,29 +13,15 @@ import java.util.Map;
 import java.util.zip.CRC32;
 
 public class Utils {
-    public static final long HMAC_SHA256_LENGTH = 32;
-    public static final int VERSION_LENGTH = 3;
-    public static final int APP_ID_LENGTH = 32;
+    private static final String MAC_ALGORITHM = "HmacSHA256";
+    private static final SecureRandom random = new SecureRandom();
 
     public static byte[] hmacSign(String keyString, byte[] msg) throws InvalidKeyException, NoSuchAlgorithmException {
-        SecretKeySpec keySpec = new SecretKeySpec(keyString.getBytes(), "HmacSHA256");
-        Mac mac = Mac.getInstance("HmacSHA256");
+        SecretKeySpec keySpec = new SecretKeySpec(keyString.getBytes(), MAC_ALGORITHM);
+        Mac mac = Mac.getInstance(MAC_ALGORITHM);
         mac.init(keySpec);
         return mac.doFinal(msg);
     }
-
-    /*
-    public static byte[] pack(PackableEx packableEx) {
-        ByteBuf buffer = new ByteBuf();
-        packableEx.marshal(buffer);
-        return buffer.asBytes();
-    }
-
-    public static void unpack(byte[] data, PackableEx packableEx) {
-        ByteBuf buffer = new ByteBuf(data);
-        packableEx.unmarshal(buffer);
-    }
-     */
 
     public static String base64Encode(byte[] data) {
         byte[] encodedBytes = Base64.encodeBase64(data);
@@ -63,7 +49,7 @@ public class Utils {
     }
 
     public static int randomInt() {
-        return new SecureRandom().nextInt();
+        return random.nextInt();
     }
 
     public static boolean isUUID(String uuid) {

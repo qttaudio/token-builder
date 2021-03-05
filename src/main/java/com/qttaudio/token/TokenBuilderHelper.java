@@ -8,17 +8,17 @@ import static com.qttaudio.token.EBuilderType.QTT;
 import static com.qttaudio.token.utils.Utils.checkEmptyParams;
 import static com.qttaudio.token.utils.Utils.checkNullParams;
 
-public class TokenBuilder {
-    public static String build(String appKey, String appSecret, String channelName, Long uid, Long ttl) throws Exception {
-        checkParams(appKey, appSecret, channelName, uid);
+public class TokenBuilderHelper {
+    public static String build(String appKey, String appCert, String channelName, Long uid, Long ttl) throws Exception {
+        checkParams(appKey, appCert, channelName, uid);
         Builder builder = TokenBuilderFactory.getBuilder(builderType);
-        return builder.build(appKey, appSecret, channelName, uid, new Strategy(ttl));
+        return builder.build(appKey, appCert, channelName, uid, new Strategy(ttl));
     }
 
-    public static String build(String appKey, String appSecret, String channelName, Long uid) throws Exception {
-        checkParams(appKey, appSecret, channelName, uid);
+    public static String build(String appKey, String appCert, String channelName, Long uid) throws Exception {
+        checkParams(appKey, appCert, channelName, uid);
         Builder builder = TokenBuilderFactory.getBuilder(builderType);
-        return builder.build(appKey, appSecret, channelName, uid, defaultStrategy);
+        return builder.build(appKey, appCert, channelName, uid, defaultStrategy);
     }
 
     public static void setBuilderType(EBuilderType type) {
@@ -29,23 +29,23 @@ public class TokenBuilder {
         defaultStrategy.setTtl(ttl);
     }
 
-    private static void checkParams(final String appKey, final String appSecret, final String channelName, final Long uid) {
-        checkNullParams(new HashMap<String, Object>(){{
+    private static void checkParams(final String appKey, final String appCert, final String channelName, final Long uid) {
+        checkNullParams(new HashMap<String, Object>() {{
             put("appKey", appKey);
-            put("appSecret", appSecret);
+            put("appCert", appCert);
             put("channelName", channelName);
             put("uid", uid);
         }});
-        checkEmptyParams(new HashMap<String, String>(){{
+        checkEmptyParams(new HashMap<String, String>() {{
             put("appKey", appKey);
-            put("appSecret", appSecret);
+            put("appCert", appCert);
             put("channelName", channelName);
         }});
         if (!Utils.isUUID(appKey)) {
             throw new RuntimeException("app key not uuid");
         }
-        if (!Utils.isUUID(appSecret)) {
-            throw new RuntimeException("app secret not uuid");
+        if (!Utils.isUUID(appCert)) {
+            throw new RuntimeException("app certificate not uuid");
         }
     }
 

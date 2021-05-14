@@ -9,6 +9,20 @@ import static com.qttaudio.token.utils.Utils.checkEmptyParams;
 import static com.qttaudio.token.utils.Utils.checkNullParams;
 
 public class TokenBuilderHelper {
+    /**
+     * build builds a token from the specified parameters.
+     *
+     * @param appKey      The app key assigned by qtt.
+     * @param appCert     The app certificate assigned by qtt.
+     * @param channelName The channel name to be joined in.
+     * @param uid         The user id. A positive unique integer.
+     * @param ttl         The ttl, e.g. the time to live of the token.
+     *                    If it's 0, it won't timeout;
+     *                    if it's positive, it lives up to the time in seconds from now on;
+     *                    it's not valid for negatives.
+     * @return The generated token in string.
+     * @throws Exception
+     */
     public static String build(String appKey, String appCert, String channelName, Long uid, Long ttl) throws Exception {
         checkParams(appKey, appCert, channelName, uid);
         Builder builder = TokenBuilderFactory.getBuilder(builderType);
